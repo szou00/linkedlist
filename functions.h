@@ -4,6 +4,7 @@ struct node {
 };
 
 void print_list(struct node * n);
+
 struct node * insert_front(struct node * list_head, int x);
 struct node * free_list(struct node *n);
 struct node * remove_node(struct node *front, int data);

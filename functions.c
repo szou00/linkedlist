@@ -4,14 +4,14 @@
 
 //Should take a pointer to a node struct and print out all of the data in the list
 void print_list(struct node * n) {
+  printf("%s", "[ ");
   while (n != NULL) {
-    printf("%d\n", n->i);
+    printf("%d ", n->i);
     n = n->next;
   }
-  if (n == NULL) {
-    printf("%s\n", "[ ]");
-  }
+  printf("%s\n", "]");
 }
+
 
 /**Should take a pointer to the existing list and the data to be added, create a new node and put it at the beginning of the list.
 The second argument should match whatever data you contain in your nodes.
@@ -32,13 +32,19 @@ struct node * insert_front(struct node * list_head, int x) {
 /**Should take a pointer to a list as a parameter and then go through the entire
 list freeing each node and return a pointer to the beginning of the list (which should be NULL by then)**/
 struct node * free_list(struct node *n){
-  struct node * beg = n;
-  while (n!=NULL) {
-    free(n);
-    n = NULL;
-    n = n->next;
+  struct node * previous_node;
+  struct node * current_node = n;
+  print_list(n);
+
+  while (current_node!=NULL) {
+    previous_node = current_node;
+    current_node = previous_node->next;
+    printf("freeing node: %d\n", previous_node->i);
+    free(previous_node);
+    previous_node = NULL;
   }
-  return beg;
+  current_node = NULL;
+  return n;
 }
 
 /**Remove the node containing data from the list pointed to by front.
@@ -48,17 +54,23 @@ struct node * remove_node(struct node *front, int data) {
   struct node * current_node = front;
   struct node * previous_node;
 
-  if (current_node!=NULL) { //if it hasn't reached the end of the list
-    if (current_node->i == data) {
+  while (current_node!=NULL) { //if it hasn't reached the end of the list
+    if (current_node->i == data) { //checks to see if the data within the node is equal to the one wanted
+      // printf("equal, node has a value of: %d\n", current_node->i);
       if (current_node != front) { //if it's not the first node
-        previous_node->next = current_node->next; //the last node gets the next node of this node
-        return front;
+        // printf("no, is not first node\n");
+        previous_node->next = current_node->next; //the node before that node gets the next node
+        return front; //returns the front of the list
       }
-      front = front->next; //if it is the first node, the first node becomes the node after the first node
-      return front;
+      // printf("yes, is first node\n");
+      front = front->next; //if it is the first node, the "first" node becomes the node after the original first node
+      return front; //return the new first node
     }
-    previous_node = current_node;
-    current_node = current_node->next;
+    //if it's not equal to the one wanted
+    // printf("not found, moving on\n");
+    previous_node = current_node; //the current node becomes the previous one
+    current_node = current_node->next; //the next node becomes the current one
   }
-  return front; //if reached end of list, just return pointer to original front 
+  // printf("not found an i oop\n");
+  return front; //if reached end of list, just return pointer to original front
 }
